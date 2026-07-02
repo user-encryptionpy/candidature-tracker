@@ -65,6 +65,11 @@ export async function GET() {
   }
   const volume = Array.from(weekBuckets, ([week, count]) => ({ week, count }));
 
+  const weekStart = startOfWeek(now);
+  const thisWeek = all.filter(
+    (a) => new Date(a.dateApplied) >= weekStart
+  ).length;
+
   const pendingFollowUps = await prisma.application.findMany({
     where: {
       nextFollowUp: { lte: now },
@@ -73,5 +78,12 @@ export async function GET() {
     orderBy: { nextFollowUp: "asc" },
   });
 
-  return NextResponse.json({ total, statusBreakdown, funnel, volume, pendingFollowUps });
+  return NextResponse.json({
+    total,
+    statusBreakdown,
+    funnel,
+    volume,
+    thisWeek,
+    pendingFollowUps,
+  });
 }

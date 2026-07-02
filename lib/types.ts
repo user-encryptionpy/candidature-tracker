@@ -10,6 +10,7 @@ export interface Application {
   company: string;
   jobTitle: string;
   url: string | null;
+  cvVersion: string | null;
   contractType: string | null;
   country: string | null;
   location: string | null;
@@ -45,7 +46,23 @@ export interface Stats {
     avgResponseDays: number | null;
   };
   volume: { week: string; count: number }[];
+  thisWeek: number;
   pendingFollowUps: Application[];
+}
+
+export interface Profile {
+  fullName: string | null;
+  headline: string | null;
+  email: string | null;
+  phone: string | null;
+  linkedin: string | null;
+  portfolio: string | null;
+  defaultCountry: string | null;
+  defaultCity: string | null;
+  defaultSource: string | null;
+  followUpDays: number;
+  weeklyGoal: number;
+  cvVersions: string[];
 }
 
 export const STATUS_LABELS: Record<ApplicationStatus, string> = {

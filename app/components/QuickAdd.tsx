@@ -38,14 +38,17 @@ export function QuickAdd({
   return (
     <form
       onSubmit={submit}
-      className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-navy/40 bg-blue-50/40 p-3"
+      className="flex flex-wrap items-center gap-2.5 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-gray-900/5"
     >
-      <span className="text-xs font-semibold uppercase tracking-wide text-navy">
+      <span className="flex items-center gap-2 pl-1 text-[11px] font-semibold uppercase tracking-wider text-navy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+          <path d="M13 3L4 14h6l-1 7 9-11h-6l1-7z" strokeLinejoin="round" />
+        </svg>
         Quick add
       </span>
       <input
         list="quickadd-company-options"
-        className="min-w-[160px] flex-1 rounded-md border border-gray-300 p-2 text-sm focus:border-navy focus:outline-none"
+        className="min-w-[150px] flex-1 rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
         placeholder="Company"
         value={company}
         onChange={(e) => setCompany(e.target.value)}
@@ -56,15 +59,15 @@ export function QuickAdd({
         ))}
       </datalist>
       <input
-        className="min-w-[200px] flex-[2] rounded-md border border-gray-300 p-2 text-sm focus:border-navy focus:outline-none"
-        placeholder="Job title  (press Enter to add as Applied, today)"
+        className="min-w-[200px] flex-[2] rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+        placeholder="Job title — Enter saves as Applied, today"
         value={jobTitle}
         onChange={(e) => setJobTitle(e.target.value)}
       />
       <button
         type="submit"
         disabled={saving || !company.trim() || !jobTitle.trim()}
-        className="rounded-md bg-navy px-4 py-2 text-sm font-medium text-white hover:bg-navy-light disabled:opacity-40"
+        className="rounded-xl bg-navy px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-navy-light disabled:opacity-40"
       >
         {saving ? "Adding..." : "Add"}
       </button>

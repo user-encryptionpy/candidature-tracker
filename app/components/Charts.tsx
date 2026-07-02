@@ -7,12 +7,23 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   CartesianGrid,
   Cell,
 } from "recharts";
-import { STATUS_COLORS, STATUS_LABELS, Stats } from "@/lib/types";
+import { STATUS_BADGE_COLORS, STATUS_LABELS, Stats } from "@/lib/types";
+
+const TOOLTIP_STYLE = {
+  borderRadius: 12,
+  border: "1px solid #e5e9f0",
+  boxShadow: "0 8px 24px rgba(13,27,51,0.10)",
+  fontSize: 12,
+  fontWeight: 600,
+  color: "#16294a",
+};
+
+const AXIS_TICK = { fontSize: 11, fill: "#8a97ab" };
 
 export function StatusBreakdownChart({
   data,
@@ -25,17 +36,21 @@ export function StatusBreakdownChart({
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <BarChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-        <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-        <Tooltip />
-        <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+    <ResponsiveContainer width="100%" height={230}>
+      <BarChart data={chartData} barSize={44}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eef1f6" />
+        <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+        <YAxis allowDecimals={false} tick={AXIS_TICK} axisLine={false} tickLine={false} width={30} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(31,56,100,0.04)" }} />
+        <Bar dataKey="count" radius={[8, 8, 2, 2]}>
           {chartData.map((d) => (
             <Cell
               key={d.status}
-              fill={STATUS_COLORS[d.status as keyof typeof STATUS_COLORS]}
+              fill={
+                STATUS_BADGE_COLORS[d.status as keyof typeof STATUS_BADGE_COLORS]
+                  ?.text ?? "#1f3864"
+              }
+              fillOpacity={0.85}
             />
           ))}
         </Bar>
@@ -51,20 +66,28 @@ export function VolumeOverTimeChart({ data }: { data: Stats["volume"] }) {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <LineChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-        <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-        <Tooltip />
-        <Line
+    <ResponsiveContainer width="100%" height={230}>
+      <AreaChart data={chartData}>
+        <defs>
+          <linearGradient id="volumeFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#2e75b6" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="#2e75b6" stopOpacity={0.02} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eef1f6" />
+        <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+        <YAxis allowDecimals={false} tick={AXIS_TICK} axisLine={false} tickLine={false} width={30} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ stroke: "#2e75b6", strokeOpacity: 0.25 }} />
+        <Area
           type="monotone"
           dataKey="count"
           stroke="#2e75b6"
-          strokeWidth={2}
+          strokeWidth={2.5}
+          fill="url(#volumeFill)"
           dot={false}
+          activeDot={{ r: 4, strokeWidth: 2, stroke: "#fff" }}
         />
-      </LineChart>
+      </AreaChart>
     </ResponsiveContainer>
   );
 }

@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseJobText } from "@/lib/parseJobText";
+import { parseJobText, PASTE_TEMPLATE } from "@/lib/parseJobText";
+import { ALL_CITIES, ALL_COUNTRIES, findCountryForCity } from "@/lib/geo";
 
 const STATUS_OPTIONS = [
   { value: "APPLIED", label: "Applied" },
@@ -29,6 +30,7 @@ function emptyForm() {
     company: "",
     jobTitle: "",
     url: "",
+    cvVersion: "",
     contractType: "",
     country: "",
     location: "",
@@ -38,7 +40,7 @@ function emptyForm() {
     salary: "",
     contactPerson: "",
     contactEmail: "",
-    nextFollowUp: plusDays(14), // auto follow-up two weeks out
+    nextFollowUp: plusDays(14), // overridden by the profile's follow-up interval
     notes: "",
   };
 }
@@ -57,7 +59,33 @@ export default function NewApplicationPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedNotice, setSavedNotice] = useState<string | null>(null);
+  const [cvVersions, setCvVersions] = useState<string[]>([]);
   const touched = useRef(new Set<string>());
+
+  useEffect(() => {
+    // Profile defaults win over history-derived ones; both only fill
+    // fields the user hasn't typed in.
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((p) => {
+        setCvVersions(p.cvVersions ?? []);
+        setForm((f) => {
+          const next = { ...f };
+          if (p.defaultSource && !touched.current.has("source"))
+            next.source = p.defaultSource;
+          if (p.defaultCountry && !touched.current.has("country"))
+            next.country = p.defaultCountry;
+          if (p.defaultCity && !touched.current.has("location") && !next.location)
+            next.location = p.defaultCity;
+          if (p.followUpDays && !touched.current.has("nextFollowUp"))
+            next.nextFollowUp = plusDays(p.followUpDays);
+          if (p.cvVersions?.length === 1 && !next.cvVersion)
+            next.cvVersion = p.cvVersions[0];
+          return next;
+        });
+      })
+      .catch(() => {});
+  }, []);
 
   function loadCompanies() {
     return fetch("/api/companies")
@@ -103,6 +131,11 @@ export default function NewApplicationPage() {
     setForm((f) => {
       let next = { ...f, [field]: value };
       if (field === "company") next = applyCompanyAutofill(value, next);
+      // Typing a known city fills the country (unless the user set it manually).
+      if (field === "location" && !touched.current.has("country")) {
+        const country = findCountryForCity(value);
+        if (country) next.country = country;
+      }
       return next;
     });
   }
@@ -182,23 +215,51 @@ export default function NewApplicationPage() {
     }
   }
 
+  async function copyTemplate() {
+    try {
+      await navigator.clipboard.writeText(PASTE_TEMPLATE);
+      setSavedNotice("Template copied — fill it anywhere, paste it back here.");
+      setTimeout(() => setSavedNotice(null), 4000);
+    } catch {
+      /* clipboard unavailable — template is still visible in the placeholder */
+    }
+  }
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <h1 className="mb-4 text-xl font-bold text-navy">New application</h1>
+    <div className="mx-auto max-w-2xl space-y-5">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-navy-ink">
+          New application
+        </h1>
+        <p className="mt-0.5 text-sm text-gray-500">
+          Paste a job posting, a LinkedIn confirmation email, or the standard
+          template — the form fills itself.
+        </p>
+      </div>
 
       {savedNotice && (
-        <p className="mb-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">
+        <p className="rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-800 ring-1 ring-emerald-200">
           {savedNotice}
         </p>
       )}
 
-      <div className="mb-6">
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Paste job posting text (optional)
-        </label>
+      <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5">
+        <div className="mb-2 flex items-center justify-between">
+          <label className="text-sm font-semibold text-navy-ink">
+            Smart paste
+          </label>
+          <button
+            type="button"
+            onClick={copyTemplate}
+            className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-400 ring-1 ring-gray-200 transition-colors hover:bg-surface hover:text-navy"
+            title="Copy the standard fill-in template to your clipboard"
+          >
+            Copy template
+          </button>
+        </div>
         <textarea
-          className="h-40 w-full rounded-md border border-gray-300 p-2 text-sm"
-          placeholder="Paste the job title, company, URL, salary, contract type... whatever you copied from the listing. Fields below will be pre-filled — including Source detected from the URL — check them before saving."
+          className="h-36 w-full rounded-xl border-0 bg-surface p-3 text-sm ring-1 ring-inset ring-gray-200 transition-shadow placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+          placeholder={`Paste anything — or use the standard template:\n\n${PASTE_TEMPLATE.split("\n").slice(0, 6).join("\n")}\n...`}
           value={pastedText}
           onChange={(e) => handlePasteText(e.target.value)}
         />
@@ -209,7 +270,7 @@ export default function NewApplicationPage() {
           e.preventDefault();
           save(false);
         }}
-        className="space-y-4"
+        className="space-y-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5"
       >
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -218,7 +279,7 @@ export default function NewApplicationPage() {
             </label>
             <input
               list="company-options"
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.company}
               onChange={(e) => handleFieldChange("company", e.target.value)}
               required
@@ -235,7 +296,7 @@ export default function NewApplicationPage() {
               Job title *
             </label>
             <input
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.jobTitle}
               onChange={(e) => handleFieldChange("jobTitle", e.target.value)}
               required
@@ -247,7 +308,7 @@ export default function NewApplicationPage() {
               Offer URL
             </label>
             <input
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.url}
               onChange={(e) => handleFieldChange("url", e.target.value)}
             />
@@ -259,7 +320,7 @@ export default function NewApplicationPage() {
             </label>
             <input
               list="contract-options"
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.contractType}
               onChange={(e) => handleFieldChange("contractType", e.target.value)}
               placeholder="CDI, Stage, PFE, Alternance..."
@@ -279,7 +340,7 @@ export default function NewApplicationPage() {
             </label>
             <input
               list="source-options"
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.source}
               onChange={(e) => handleFieldChange("source", e.target.value)}
               placeholder="LinkedIn, Indeed, referral..."
@@ -296,10 +357,16 @@ export default function NewApplicationPage() {
               Country
             </label>
             <input
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              list="country-options"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.country}
               onChange={(e) => handleFieldChange("country", e.target.value)}
             />
+            <datalist id="country-options">
+              {ALL_COUNTRIES.map((c) => (
+                <option key={c} value={c} />
+              ))}
+            </datalist>
           </div>
 
           <div>
@@ -307,10 +374,17 @@ export default function NewApplicationPage() {
               City
             </label>
             <input
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              list="city-options"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.location}
               onChange={(e) => handleFieldChange("location", e.target.value)}
+              placeholder="Known city fills the country"
             />
+            <datalist id="city-options">
+              {ALL_CITIES.map((c) => (
+                <option key={c} value={c} />
+              ))}
+            </datalist>
           </div>
 
           <div>
@@ -319,7 +393,7 @@ export default function NewApplicationPage() {
             </label>
             <input
               type="date"
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.dateApplied}
               onChange={(e) => handleFieldChange("dateApplied", e.target.value)}
             />
@@ -330,7 +404,7 @@ export default function NewApplicationPage() {
               Status
             </label>
             <select
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.status}
               onChange={(e) => handleFieldChange("status", e.target.value)}
             >
@@ -347,7 +421,7 @@ export default function NewApplicationPage() {
               Salary
             </label>
             <input
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.salary}
               onChange={(e) => handleFieldChange("salary", e.target.value)}
             />
@@ -359,7 +433,7 @@ export default function NewApplicationPage() {
             </label>
             <input
               type="date"
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.nextFollowUp}
               onChange={(e) =>
                 handleFieldChange("nextFollowUp", e.target.value)
@@ -369,10 +443,32 @@ export default function NewApplicationPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              CV version sent
+            </label>
+            <input
+              list="cv-options"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              value={form.cvVersion}
+              onChange={(e) => handleFieldChange("cvVersion", e.target.value)}
+              placeholder={
+                cvVersions.length
+                  ? "Pick a registered CV"
+                  : "Register CVs in Profile"
+              }
+            />
+            <datalist id="cv-options">
+              {cvVersions.map((cv) => (
+                <option key={cv} value={cv} />
+              ))}
+            </datalist>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Contact person
             </label>
             <input
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.contactPerson}
               onChange={(e) =>
                 handleFieldChange("contactPerson", e.target.value)
@@ -385,7 +481,7 @@ export default function NewApplicationPage() {
               Contact email
             </label>
             <input
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={form.contactEmail}
               onChange={(e) =>
                 handleFieldChange("contactEmail", e.target.value)
@@ -407,11 +503,11 @@ export default function NewApplicationPage() {
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        <div className="flex gap-3">
+        <div className="flex gap-2.5 pt-1">
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-md bg-navy px-4 py-2 text-sm font-medium text-white hover:bg-navy-light disabled:opacity-50"
+            className="rounded-xl bg-navy px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-navy-light disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Save application"}
           </button>
@@ -419,7 +515,7 @@ export default function NewApplicationPage() {
             type="button"
             disabled={submitting}
             onClick={() => save(true)}
-            className="rounded-md border border-navy px-4 py-2 text-sm font-medium text-navy hover:bg-navy hover:text-white disabled:opacity-50"
+            className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-navy shadow-sm ring-1 ring-gray-900/10 transition-colors hover:bg-navy hover:text-white disabled:opacity-50"
           >
             Save &amp; add another
           </button>

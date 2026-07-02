@@ -20,11 +20,29 @@ enum Status {
   NO_RESPONSE
 }
 
+model Profile {
+  id             Int      @id @default(1)
+  fullName       String?
+  headline       String?
+  email          String?
+  phone          String?
+  linkedin       String?
+  portfolio      String?
+  defaultCountry String?
+  defaultCity    String?
+  defaultSource  String?
+  followUpDays   Int      @default(14)
+  weeklyGoal     Int      @default(10)
+  cvList         String?
+  updatedAt      DateTime @updatedAt
+}
+
 model Application {
   id            Int      @id @default(autoincrement())
   company       String
   jobTitle      String
   url           String?
+  cvVersion     String?
   contractType  String?
   country       String?
   location      String?

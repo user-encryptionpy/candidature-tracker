@@ -32,6 +32,7 @@ export async function PATCH(
     "company",
     "jobTitle",
     "url",
+    "cvVersion",
     "contractType",
     "country",
     "location",

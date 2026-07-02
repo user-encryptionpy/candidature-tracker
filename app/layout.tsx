@@ -1,11 +1,35 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Inter } from "next/font/google";
+import { NavLinks } from "@/app/components/NavLinks";
 import "./globals.css";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Candidature Tracker",
   description: "Track job applications, KPIs and follow-ups",
 };
+
+function LogoMark() {
+  return (
+    <div className="flex items-center gap-3 px-6">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-navy-light to-navy text-sm font-black text-white ring-1 ring-white/20">
+        CT
+      </div>
+      <div className="leading-tight">
+        <div className="text-sm font-bold tracking-wide text-white">
+          CANDIDATURES
+        </div>
+        <div className="text-[11px] font-medium uppercase tracking-widest text-blue-200/60">
+          Suivi &amp; KPIs
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function RootLayout({
   children,
@@ -13,32 +37,38 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
-        <header className="bg-navy shadow-sm">
-          <nav className="mx-auto flex max-w-6xl items-center gap-8 px-4 py-4">
-            <Link
-              href="/"
-              className="text-lg font-bold tracking-wide text-white"
-            >
-              SUIVI DE MES CANDIDATURES
-            </Link>
-            <Link
-              href="/"
-              className="text-sm font-medium text-blue-100 hover:text-white"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/new"
-              className="text-sm font-medium text-blue-100 hover:text-white"
-            >
-              + New application
-            </Link>
-          </nav>
+    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+      <body className="min-h-screen bg-surface text-gray-900">
+        {/* Desktop sidebar */}
+        <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 bg-gradient-to-b from-navy-ink via-navy-deep to-navy py-6 lg:flex">
+          <LogoMark />
+          <NavLinks orientation="side" />
+          <div className="mt-auto px-6">
+            <div className="rounded-xl bg-white/5 p-3 text-[11px] leading-relaxed text-blue-100/50 ring-1 ring-white/10">
+              Paste a job posting or a LinkedIn confirmation email on{" "}
+              <span className="font-semibold text-blue-100/80">
+                New application
+              </span>{" "}
+              — fields fill themselves.
+            </div>
+          </div>
+        </aside>
+
+        {/* Mobile top bar */}
+        <header className="sticky top-0 z-30 flex items-center justify-between bg-gradient-to-r from-navy-ink to-navy px-4 py-3 lg:hidden">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-xs font-black text-white">
+              CT
+            </div>
+            <span className="text-sm font-bold tracking-wide text-white">
+              CANDIDATURES
+            </span>
+          </div>
+          <NavLinks orientation="top" />
         </header>
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
-          {children}
+
+        <main className="min-h-screen px-4 py-6 sm:px-6 lg:ml-60 lg:px-10 lg:py-8">
+          <div className="mx-auto max-w-6xl">{children}</div>
         </main>
       </body>
     </html>

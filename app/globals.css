@@ -1,12 +1,33 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
+
+  /* Brand palette — deep navy inherited from the original Excel template,
+     lifted with a slate surface scale and an emerald success accent. */
   --color-navy: #1f3864;
+  --color-navy-deep: #16294a;
+  --color-navy-ink: #0d1b33;
   --color-navy-light: #2e75b6;
-  --color-row-stripe: #ebf3fb;
+  --color-row-stripe: #f4f8fd;
+  --color-accent: #10b981;
+  --color-surface: #f6f8fb;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Thin, unobtrusive scrollbars for the sticky-header table panel */
+.slim-scroll::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.slim-scroll::-webkit-scrollbar-thumb {
+  background: #c7d2e0;
+  border-radius: 8px;
+}
+.slim-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }

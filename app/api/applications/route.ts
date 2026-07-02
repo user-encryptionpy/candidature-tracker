@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
       company: body.company,
       jobTitle: body.jobTitle,
       url: body.url || null,
+      cvVersion: body.cvVersion || null,
       contractType: body.contractType || null,
       country: body.country || null,
       location: body.location || null,

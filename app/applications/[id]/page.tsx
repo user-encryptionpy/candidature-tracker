@@ -66,26 +66,27 @@ export default function ApplicationDetailPage({
   if (!app) return <p className="text-sm text-gray-500">Loading...</p>;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-navy">
-          {app.company} — {app.jobTitle}
+    <div className="mx-auto max-w-2xl space-y-5">
+      <div className="flex items-start justify-between gap-3">
+        <h1 className="text-2xl font-bold tracking-tight text-navy-ink">
+          {app.company}{" "}
+          <span className="font-medium text-gray-400">— {app.jobTitle}</span>
         </h1>
         <button
           onClick={handleDelete}
-          className="text-sm text-red-600 hover:underline"
+          className="shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-red-600 ring-1 ring-red-200 transition-colors hover:bg-red-50"
         >
           Delete
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5">
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">
             Company
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.company}
             onChange={(e) => update("company", e.target.value)}
           />
@@ -95,7 +96,7 @@ export default function ApplicationDetailPage({
             Job title
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.jobTitle}
             onChange={(e) => update("jobTitle", e.target.value)}
           />
@@ -107,7 +108,7 @@ export default function ApplicationDetailPage({
           </label>
           <div className="flex gap-2">
             <input
-              className="w-full rounded-md border border-gray-300 p-2 text-sm"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
               value={app.url ?? ""}
               onChange={(e) => update("url", e.target.value)}
             />
@@ -129,7 +130,7 @@ export default function ApplicationDetailPage({
             Location
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.location ?? ""}
             onChange={(e) => update("location", e.target.value)}
           />
@@ -140,7 +141,7 @@ export default function ApplicationDetailPage({
             Contract type
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.contractType ?? ""}
             onChange={(e) => update("contractType", e.target.value)}
           />
@@ -151,7 +152,7 @@ export default function ApplicationDetailPage({
             Country
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.country ?? ""}
             onChange={(e) => update("country", e.target.value)}
           />
@@ -162,7 +163,7 @@ export default function ApplicationDetailPage({
             Source
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.source ?? ""}
             onChange={(e) => update("source", e.target.value)}
           />
@@ -174,7 +175,7 @@ export default function ApplicationDetailPage({
           </label>
           <input
             type="date"
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={toDateInput(app.dateApplied)}
             onChange={(e) => update("dateApplied", e.target.value)}
           />
@@ -185,7 +186,7 @@ export default function ApplicationDetailPage({
             Status
           </label>
           <select
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.status}
             onChange={(e) =>
               update("status", e.target.value as Application["status"])
@@ -204,9 +205,20 @@ export default function ApplicationDetailPage({
             Salary
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.salary ?? ""}
             onChange={(e) => update("salary", e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            CV version sent
+          </label>
+          <input
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            value={app.cvVersion ?? ""}
+            onChange={(e) => update("cvVersion", e.target.value)}
           />
         </div>
 
@@ -216,7 +228,7 @@ export default function ApplicationDetailPage({
           </label>
           <input
             type="date"
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={toDateInput(app.nextFollowUp)}
             onChange={(e) => update("nextFollowUp", e.target.value)}
           />
@@ -228,7 +240,7 @@ export default function ApplicationDetailPage({
           </label>
           <input
             type="date"
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={toDateInput(app.dateResponse)}
             onChange={(e) => update("dateResponse", e.target.value)}
           />
@@ -242,7 +254,7 @@ export default function ApplicationDetailPage({
             Interview HR
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.interviewHR ?? ""}
             onChange={(e) => update("interviewHR", e.target.value)}
           />
@@ -253,7 +265,7 @@ export default function ApplicationDetailPage({
             Interview Tech
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.interviewTech ?? ""}
             onChange={(e) => update("interviewTech", e.target.value)}
           />
@@ -264,7 +276,7 @@ export default function ApplicationDetailPage({
             Offer received
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.offerReceived ?? ""}
             onChange={(e) => update("offerReceived", e.target.value)}
           />
@@ -275,7 +287,7 @@ export default function ApplicationDetailPage({
             Result
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.result ?? ""}
             onChange={(e) => update("result", e.target.value)}
           />
@@ -286,7 +298,7 @@ export default function ApplicationDetailPage({
             Contact person
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.contactPerson ?? ""}
             onChange={(e) => update("contactPerson", e.target.value)}
           />
@@ -297,7 +309,7 @@ export default function ApplicationDetailPage({
             Contact email
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
             value={app.contactEmail ?? ""}
             onChange={(e) => update("contactEmail", e.target.value)}
           />
@@ -333,7 +345,7 @@ export default function ApplicationDetailPage({
       <button
         onClick={handleSave}
         disabled={saving}
-        className="rounded-md bg-navy px-4 py-2 text-sm font-medium text-white hover:bg-navy-light disabled:opacity-50"
+        className="rounded-xl bg-navy px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-navy-light disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save changes"}
       </button>

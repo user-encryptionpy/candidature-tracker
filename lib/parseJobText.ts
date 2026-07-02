@@ -1,3 +1,5 @@
+import { detectGeo, findCountryForCity, normalizeCountry } from "./geo";
+
 export interface ParsedJobFields {
   jobTitle?: string;
   company?: string;
@@ -66,15 +68,46 @@ function parseLinkedInEmail(
   return true;
 }
 
+// The canonical quick-fill template — paste this exact structure and every
+// line maps 1:1 onto a form field. Shown on /new via the "Copy template" button.
+export const PASTE_TEMPLATE = `Entreprise:
+Poste:
+Contrat:
+Pays:
+Ville:
+Salaire:
+Source:
+URL:
+Date:
+Email:
+Notes: `;
+
 const LABELED_PATTERNS: [RegExp, keyof ParsedJobFields][] = [
-  [/(?:poste|job title|titre)\s*[:\-]\s*(.+)/i, "jobTitle"],
+  [/(?:poste|job title|titre|intitul[ée])\s*[:\-]\s*(.+)/i, "jobTitle"],
   [/(?:entreprise|company|soci[ée]t[ée])\s*[:\-]\s*(.+)/i, "company"],
   [/(?:lieu|location|ville)\s*[:\-]\s*(.+)/i, "location"],
   [/(?:pays|country)\s*[:\-]\s*(.+)/i, "country"],
   [/(?:salaire|salary|r[ée]mun[ée]ration|tjm)\s*[:\-]\s*(.+)/i, "salary"],
-  [/(?:type de contrat|type contrat|contract type|contrat)\s*[:\-]\s*(.+)/i, "contractType"],
+  [/(?:type de contrat|type contrat|contract type|contrat|type de poste)\s*[:\-]\s*(.+)/i, "contractType"],
   [/(?:source|plateforme)\s*[:\-]\s*(.+)/i, "source"],
+  [/(?:url|lien|link)\s*[:\-]\s*(.+)/i, "url"],
+  [/(?:date postulation|date candidature|date(?!\s+relance))\s*[:\-]\s*(.+)/i, "dateApplied"],
+  [/(?:e-?mail|contact e-?mail)\s*[:\-]\s*(.+)/i, "contactEmail"],
+  [/(?:notes?|commentaires?|remarques?)\s*[:\-]\s*(.+)/i, "notes"],
 ];
+
+// Accepts dd/mm/yyyy, yyyy-mm-dd, or natural-language dates → yyyy-mm-dd (local).
+function normalizeDateInput(raw: string): string | undefined {
+  const fr = raw.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/);
+  if (fr) {
+    return `${fr[3]}-${fr[2].padStart(2, "0")}-${fr[1].padStart(2, "0")}`;
+  }
+  const d = new Date(raw);
+  if (isNaN(d.getTime())) return undefined;
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
 
 // Domain → recruiting-site name, used to auto-detect Source from a pasted URL.
 const SOURCE_DOMAINS: Record<string, string> = {
@@ -122,13 +155,24 @@ function detectSourceFromUrl(url: string): string | undefined {
   return undefined;
 }
 
+// Career sites (Indeed job pages, Safran-style postings) cram several
+// "Label : value" pairs on a single line — break them apart so each labeled
+// pattern sees its own line.
+const INLINE_LABELS =
+  /(?<!^)\s+(?=(?:Company|Job field|Location|Contract type|Contract duration|Required degree|Required experience|Professional status|Spoken language|Entreprise|Poste|Ville|Pays|Salaire|Source)\s*:)/g;
+
+// Page-chrome lines that must never be mistaken for a job title.
+const JUNK_TITLE =
+  /^(détails de l'emploi|description du poste|job details|job description|type de poste|lieu|correspondance entre|published|temps plein|full[- ]time|&nbsp;?)/i;
+
 // Best-effort pre-fill only: everything it produces is shown in an editable
 // form, so a wrong or missing guess just means the user types it themselves.
 export function parseJobText(
-  text: string,
+  rawText: string,
   knownCompanies: string[] = []
 ): ParsedJobFields {
   const result: ParsedJobFields = {};
+  const text = rawText.replace(/&nbsp;/g, " ").replace(INLINE_LABELS, "\n");
   const lines = text
     .split("\n")
     .map((l) => l.trim())
@@ -142,7 +186,15 @@ export function parseJobText(
     for (const [regex, field] of LABELED_PATTERNS) {
       if (result[field]) continue;
       const match = line.match(regex);
-      if (match) result[field] = match[1].trim();
+      if (!match) continue;
+      const value = match[1].trim();
+      if (!value) continue;
+      if (field === "dateApplied") {
+        const normalized = normalizeDateInput(value);
+        if (normalized) result.dateApplied = normalized;
+      } else {
+        result[field] = value;
+      }
     }
   }
 
@@ -165,12 +217,17 @@ export function parseJobText(
     if (salaryMatch) result.salary = salaryMatch[0].trim();
   }
 
-  if (!result.contractType) {
-    for (const [regex, label] of CONTRACT_KEYWORDS) {
-      if (regex.test(text)) {
+  // Canonicalize the contract value ("Permanent" → CDI, "Internship" → Stage);
+  // if nothing was labeled, fall back to scanning the whole text.
+  for (const [regex, label] of CONTRACT_KEYWORDS) {
+    if (result.contractType) {
+      if (regex.test(result.contractType)) {
         result.contractType = label;
         break;
       }
+    } else if (regex.test(text)) {
+      result.contractType = label;
+      break;
     }
   }
 
@@ -186,8 +243,42 @@ export function parseJobText(
     if (atMatch) result.company = atMatch[1].trim();
   }
 
-  if (!result.jobTitle && lines.length) {
-    result.jobTitle = lines[0].slice(0, 120);
+  // Geo enrichment: "Ville: Casablanca , Morocco" → split city/country;
+  // canonicalize country names; derive country from a known city; and as a
+  // last resort scan the whole text for a known city or country.
+  if (result.location && result.location.includes(",")) {
+    const [cityPart, countryPart] = result.location.split(",").map((s) => s.trim());
+    const canonical = normalizeCountry(countryPart);
+    if (canonical) {
+      result.location = cityPart;
+      if (!result.country) result.country = canonical;
+    }
+  }
+  if (result.country) {
+    result.country = normalizeCountry(result.country) ?? result.country;
+  }
+  if (result.location && !result.country) {
+    result.country = findCountryForCity(result.location);
+  }
+  if (!result.location || !result.country) {
+    const geo = detectGeo(text);
+    if (!result.location && geo.city) result.location = geo.city;
+    if (!result.country && geo.country) result.country = geo.country;
+    if (geo.workMode && !result.notes) result.notes = `Work mode: ${geo.workMode}`;
+  }
+
+  // Title fallback runs last so it can rule out lines that turned out to be
+  // the company, the city, or page chrome.
+  if (!result.jobTitle) {
+    const candidate = lines.find(
+      (l) =>
+        l.length >= 8 &&
+        !JUNK_TITLE.test(l) &&
+        !l.includes(":") &&
+        l !== result.company &&
+        !findCountryForCity(l)
+    );
+    if (candidate) result.jobTitle = candidate.slice(0, 120);
   }
 
   return result;
