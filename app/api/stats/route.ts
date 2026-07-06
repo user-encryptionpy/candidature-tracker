@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { applyAutoNoResponse } from "@/lib/autoExpire";
+import { cutoffDate, effectiveStatus, getNoResponseDays } from "@/lib/autoExpire";
 
 function startOfWeek(d: Date) {
   const date = new Date(d);
@@ -12,17 +12,23 @@ function startOfWeek(d: Date) {
 }
 
 export async function GET() {
-  await applyAutoNoResponse();
+  const cutoff = cutoffDate(await getNoResponseDays());
 
   const all = await prisma.application.findMany({
     select: { status: true, dateApplied: true, dateResponse: true },
   });
 
   const total = all.length;
+  // Real counts drive the funnel; effective counts (stale Applied folded into
+  // No response) drive the status-breakdown graph.
   const counts = { APPLIED: 0, INTERVIEW: 0, OFFER: 0, REJECTED: 0, NO_RESPONSE: 0 };
-  for (const a of all) counts[a.status]++;
+  const effCounts = { APPLIED: 0, INTERVIEW: 0, OFFER: 0, REJECTED: 0, NO_RESPONSE: 0 };
+  for (const a of all) {
+    counts[a.status]++;
+    effCounts[effectiveStatus(a.status, a.dateApplied, cutoff)]++;
+  }
 
-  const statusBreakdown = Object.entries(counts).map(([status, count]) => ({
+  const statusBreakdown = Object.entries(effCounts).map(([status, count]) => ({
     status,
     count,
   }));

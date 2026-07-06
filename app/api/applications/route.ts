@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { applyAutoNoResponse } from "@/lib/autoExpire";
 import { Status } from "@/app/generated/prisma/client";
 
 export async function GET(req: NextRequest) {
-  await applyAutoNoResponse();
-
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q")?.trim();
   const status = searchParams.get("status");
