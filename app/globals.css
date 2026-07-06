@@ -4,7 +4,11 @@
    switch (which itself can follow the system preference). */
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
+/* NOTE: a non-inline @theme so the surface/card/stripe utilities compile to
+   `var(--color-…)` and can be re-pointed by the .dark block below. With
+   `@theme inline` the values get baked into each utility and dark mode's
+   background overrides would silently do nothing. */
+@theme {
   --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
 
   /* Brand palette — deep navy inherited from the original Excel template,
