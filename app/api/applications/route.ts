@@ -1,16 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { Status } from "@/app/generated/prisma/client";
+import { Prisma, Status } from "@/app/generated/prisma/client";
+import { cutoffDate, getNoResponseDays } from "@/lib/autoExpire";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q")?.trim();
   const status = searchParams.get("status");
+  const from = searchParams.get("from");
+  const to = searchParams.get("to");
+
+  // Filter by the effective status shown in the graph: "No response" also
+  // covers Applied with no reply past the threshold; "Applied" excludes them.
+  let statusFilter: Prisma.ApplicationWhereInput = {};
+  if (status && status !== "ALL") {
+    const cutoff = cutoffDate(await getNoResponseDays());
+    if (status === "NO_RESPONSE") {
+      statusFilter = {
+        OR: [
+          { status: "NO_RESPONSE" },
+          { status: "APPLIED", dateApplied: { lt: cutoff } },
+        ],
+      };
+    } else if (status === "APPLIED") {
+      statusFilter = { status: "APPLIED", dateApplied: { gte: cutoff } };
+    } else {
+      statusFilter = { status: status as Status };
+    }
+  }
+
+  const dateFilter: Prisma.ApplicationWhereInput = {};
+  if (from || to) {
+    const range: Prisma.DateTimeFilter = {};
+    if (from) range.gte = new Date(`${from}T00:00:00`);
+    if (to) range.lte = new Date(`${to}T23:59:59.999`);
+    dateFilter.dateApplied = range;
+  }
 
   const applications = await prisma.application.findMany({
     where: {
       AND: [
-        status && status !== "ALL" ? { status: status as Status } : {},
+        statusFilter,
+        dateFilter,
         q
           ? {
               OR: [

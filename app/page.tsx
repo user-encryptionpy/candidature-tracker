@@ -67,6 +67,8 @@ export default function DashboardPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("ALL");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
@@ -99,6 +101,8 @@ export default function DashboardPage() {
     const params = new URLSearchParams();
     if (query) params.set("q", query);
     if (status !== "ALL") params.set("status", status);
+    if (from) params.set("from", from);
+    if (to) params.set("to", to);
     setLoading(true);
     return fetch(`/api/applications?${params.toString()}`)
       .then((r) => r.json())
@@ -107,7 +111,7 @@ export default function DashboardPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [query, status]);
+  }, [query, status, from, to]);
 
   useEffect(() => {
     fetchStats();
@@ -431,6 +435,38 @@ export default function DashboardPage() {
               </option>
             ))}
           </select>
+          <div className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 text-sm shadow-sm ring-1 ring-gray-900/10">
+            <span className="text-xs font-medium text-gray-400">Applied</span>
+            <input
+              type="date"
+              value={from}
+              max={to || undefined}
+              onChange={(e) => setFrom(e.target.value)}
+              className="border-0 bg-transparent p-0 text-sm focus:outline-none"
+              title="From date"
+            />
+            <span className="text-gray-300">→</span>
+            <input
+              type="date"
+              value={to}
+              min={from || undefined}
+              onChange={(e) => setTo(e.target.value)}
+              className="border-0 bg-transparent p-0 text-sm focus:outline-none"
+              title="To date"
+            />
+            {(from || to) && (
+              <button
+                onClick={() => {
+                  setFrom("");
+                  setTo("");
+                }}
+                className="ml-0.5 flex h-5 w-5 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+                title="Clear date filter"
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
