@@ -31,6 +31,7 @@ export async function GET() {
         defaultCity: null,
         defaultSource: null,
         followUpDays: 14,
+        noResponseDays: 7,
         weeklyGoal: 10,
         cvList: null,
       })
@@ -55,6 +56,9 @@ export async function PUT(req: NextRequest) {
     followUpDays: Number.isFinite(+body.followUpDays)
       ? Math.max(1, Math.round(+body.followUpDays))
       : 14,
+    noResponseDays: Number.isFinite(+body.noResponseDays)
+      ? Math.max(1, Math.round(+body.noResponseDays))
+      : 7,
     weeklyGoal: Number.isFinite(+body.weeklyGoal)
       ? Math.max(0, Math.round(+body.weeklyGoal))
       : 10,

@@ -18,10 +18,12 @@ export function ApplicationsTable({
   applications,
   onDelete,
   onStatusChange,
+  onOpen,
 }: {
   applications: Application[];
   onDelete: (id: number) => void;
   onStatusChange: (id: number, status: ApplicationStatus) => void;
+  onOpen: (id: number) => void;
 }) {
   if (applications.length === 0) {
     return (
@@ -62,22 +64,20 @@ export function ApplicationsTable({
             return (
               <tr
                 key={a.id}
-                className={`transition-colors hover:bg-blue-50/60 ${
+                onClick={() => onOpen(a.id)}
+                className={`group cursor-pointer transition-colors hover:bg-blue-50/60 ${
                   i % 2 === 1 ? "bg-row-stripe" : "bg-white"
                 }`}
               >
                 <td className="px-4 py-2.5">
-                  <Link
-                    href={`/applications/${a.id}`}
-                    className="font-semibold text-navy-ink hover:text-navy-light hover:underline"
-                  >
+                  <span className="font-semibold text-navy-ink group-hover:text-navy-light">
                     {a.company}
-                  </Link>
+                  </span>
                 </td>
                 <td className="max-w-[280px] truncate px-4 py-2.5 text-gray-600" title={a.jobTitle}>
                   {a.jobTitle}
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
                   <select
                     value={a.status}
                     onChange={(e) =>
@@ -121,7 +121,10 @@ export function ApplicationsTable({
                     ? new Date(a.nextFollowUp).toLocaleDateString()
                     : "—"}
                 </td>
-                <td className="px-4 py-2.5 text-right">
+                <td
+                  className="px-4 py-2.5 text-right"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <button
                     onClick={() =>
                       handleDelete(a.id, `${a.company} — ${a.jobTitle}`)

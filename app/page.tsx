@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Application, ApplicationStatus, Profile, Stats } from "@/lib/types";
 import { StatCard } from "@/app/components/StatCard";
 import {
@@ -11,7 +12,11 @@ import {
 import { ApplicationsTable } from "@/app/components/ApplicationsTable";
 import { StatusBadge } from "@/app/components/StatusBadge";
 import { QuickAdd } from "@/app/components/QuickAdd";
+import { ResponseDateModal } from "@/app/components/ResponseDateModal";
 import { downloadChartPng } from "@/lib/downloadChart";
+
+// Statuses that mean the company replied — these prompt for the response date.
+const RESPONDED = new Set<ApplicationStatus>(["INTERVIEW", "OFFER", "REJECTED"]);
 
 const STATUS_FILTERS = [
   { value: "ALL", label: "All statuses" },
@@ -67,6 +72,12 @@ export default function DashboardPage() {
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const [companies, setCompanies] = useState<string[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [pendingChange, setPendingChange] = useState<{
+    id: number;
+    status: ApplicationStatus;
+    company: string;
+  } | null>(null);
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const volumeChartRef = useRef<HTMLDivElement>(null);
   const statusChartRef = useRef<HTMLDivElement>(null);
@@ -117,16 +128,40 @@ export default function DashboardPage() {
     await Promise.all([fetchApplications(), fetchStats()]);
   }
 
-  async function handleStatusChange(id: number, newStatus: ApplicationStatus) {
+  async function patchStatus(
+    id: number,
+    newStatus: ApplicationStatus,
+    dateResponse: string | null
+  ) {
     setApplications((apps) =>
-      apps.map((a) => (a.id === id ? { ...a, status: newStatus } : a))
+      apps.map((a) =>
+        a.id === id ? { ...a, status: newStatus, dateResponse } : a
+      )
     );
     await fetch(`/api/applications/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: newStatus }),
+      body: JSON.stringify({ status: newStatus, dateResponse }),
     });
     await Promise.all([fetchApplications(), fetchStats()]);
+  }
+
+  function handleStatusChange(id: number, newStatus: ApplicationStatus) {
+    // A reply (interview/offer/rejection) asks when it arrived; going back to
+    // "applied" or "no response" clears any recorded response date.
+    if (RESPONDED.has(newStatus)) {
+      const app = applications.find((a) => a.id === id);
+      setPendingChange({ id, status: newStatus, company: app?.company ?? "" });
+    } else {
+      patchStatus(id, newStatus, null);
+    }
+  }
+
+  function confirmResponseDate(dateISO: string) {
+    if (pendingChange) {
+      patchStatus(pendingChange.id, pendingChange.status, dateISO);
+    }
+    setPendingChange(null);
   }
 
   async function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
@@ -407,9 +442,18 @@ export default function DashboardPage() {
             applications={applications}
             onDelete={handleDelete}
             onStatusChange={handleStatusChange}
+            onOpen={(id) => router.push(`/applications/${id}`)}
           />
         )}
       </div>
+
+      <ResponseDateModal
+        open={pendingChange !== null}
+        status={pendingChange?.status ?? null}
+        company={pendingChange?.company ?? ""}
+        onConfirm={confirmResponseDate}
+        onCancel={() => setPendingChange(null)}
+      />
     </div>
   );
 }

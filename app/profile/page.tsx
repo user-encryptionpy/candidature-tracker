@@ -17,6 +17,7 @@ interface ProfileState {
   defaultCity: string;
   defaultSource: string;
   followUpDays: number;
+  noResponseDays: number;
   weeklyGoal: number;
   cvVersions: string[];
 }
@@ -32,6 +33,7 @@ const EMPTY: ProfileState = {
   defaultCity: "",
   defaultSource: "",
   followUpDays: 14,
+  noResponseDays: 7,
   weeklyGoal: 10,
   cvVersions: [],
 };
@@ -71,6 +73,7 @@ export default function ProfilePage() {
             Object.entries(p).map(([k, v]) => [k, v ?? ""])
           ),
           followUpDays: p.followUpDays ?? 14,
+          noResponseDays: p.noResponseDays ?? 7,
           weeklyGoal: p.weeklyGoal ?? 10,
           cvVersions: p.cvVersions ?? [],
         })
@@ -221,6 +224,15 @@ export default function ProfilePage() {
               className={INPUT_CLASS}
               value={profile.followUpDays}
               onChange={(e) => set("followUpDays", +e.target.value)}
+            />
+          </Field>
+          <Field label="Mark 'No response' after (days)">
+            <input
+              type="number"
+              min={1}
+              className={INPUT_CLASS}
+              value={profile.noResponseDays}
+              onChange={(e) => set("noResponseDays", +e.target.value)}
             />
           </Field>
           <Field label="Weekly application goal">

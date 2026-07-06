@@ -32,6 +32,7 @@ model Profile {
   defaultCity    String?
   defaultSource  String?
   followUpDays   Int      @default(14)
+  noResponseDays Int      @default(7)
   weeklyGoal     Int      @default(10)
   cvList         String?
   updatedAt      DateTime @updatedAt

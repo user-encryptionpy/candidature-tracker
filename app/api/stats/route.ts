@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { applyAutoNoResponse } from "@/lib/autoExpire";
 
 function startOfWeek(d: Date) {
   const date = new Date(d);
@@ -11,6 +12,8 @@ function startOfWeek(d: Date) {
 }
 
 export async function GET() {
+  await applyAutoNoResponse();
+
   const all = await prisma.application.findMany({
     select: { status: true, dateApplied: true, dateResponse: true },
   });

@@ -61,6 +61,7 @@ export interface Profile {
   defaultCity: string | null;
   defaultSource: string | null;
   followUpDays: number;
+  noResponseDays: number;
   weeklyGoal: number;
   cvVersions: string[];
 }
