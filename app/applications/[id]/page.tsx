@@ -68,7 +68,7 @@ export default function ApplicationDetailPage({
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div className="flex items-start justify-between gap-3">
-        <h1 className="text-2xl font-bold tracking-tight text-navy-ink">
+        <h1 className="text-2xl font-bold tracking-tight text-navy-ink dark:text-slate-100">
           {app.company}{" "}
           <span className="font-medium text-gray-400">— {app.jobTitle}</span>
         </h1>
@@ -80,35 +80,35 @@ export default function ApplicationDetailPage({
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5">
+      <div className="grid grid-cols-2 gap-4 rounded-2xl bg-card p-5 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Company
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.company}
             onChange={(e) => update("company", e.target.value)}
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Job title
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.jobTitle}
             onChange={(e) => update("jobTitle", e.target.value)}
           />
         </div>
 
         <div className="col-span-2">
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Offer URL
           </label>
           <div className="flex gap-2">
             <input
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={app.url ?? ""}
               onChange={(e) => update("url", e.target.value)}
             />
@@ -126,67 +126,67 @@ export default function ApplicationDetailPage({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Location
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.location ?? ""}
             onChange={(e) => update("location", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Contract type
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.contractType ?? ""}
             onChange={(e) => update("contractType", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Country
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.country ?? ""}
             onChange={(e) => update("country", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Source
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.source ?? ""}
             onChange={(e) => update("source", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Date applied
           </label>
           <input
             type="date"
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={toDateInput(app.dateApplied)}
             onChange={(e) => update("dateApplied", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Status
           </label>
           <select
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.status}
             onChange={(e) =>
               update("status", e.target.value as Application["status"])
@@ -201,46 +201,46 @@ export default function ApplicationDetailPage({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Salary
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.salary ?? ""}
             onChange={(e) => update("salary", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             CV version sent
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.cvVersion ?? ""}
             onChange={(e) => update("cvVersion", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Next follow-up
           </label>
           <input
             type="date"
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={toDateInput(app.nextFollowUp)}
             onChange={(e) => update("nextFollowUp", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Response date
           </label>
           <input
             type="date"
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={toDateInput(app.dateResponse)}
             onChange={(e) => update("dateResponse", e.target.value)}
           />
@@ -250,73 +250,73 @@ export default function ApplicationDetailPage({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Interview HR
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.interviewHR ?? ""}
             onChange={(e) => update("interviewHR", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Interview Tech
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.interviewTech ?? ""}
             onChange={(e) => update("interviewTech", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Offer received
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.offerReceived ?? ""}
             onChange={(e) => update("offerReceived", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Result
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.result ?? ""}
             onChange={(e) => update("result", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Contact person
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.contactPerson ?? ""}
             onChange={(e) => update("contactPerson", e.target.value)}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Contact email
           </label>
           <input
-            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
             value={app.contactEmail ?? ""}
             onChange={(e) => update("contactEmail", e.target.value)}
           />
         </div>
 
         <div className="col-span-2">
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Notes
           </label>
           <textarea
@@ -328,7 +328,7 @@ export default function ApplicationDetailPage({
 
         {app.rawPastedText && (
           <div className="col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Originally pasted text
             </label>
             <textarea

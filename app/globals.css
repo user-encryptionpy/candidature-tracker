@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: the <html> element gets `.dark` toggled by the theme
+   switch (which itself can follow the system preference). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
 
@@ -12,6 +16,15 @@
   --color-row-stripe: #f4f8fd;
   --color-accent: #10b981;
   --color-surface: #f6f8fb;
+  --color-card: #ffffff;
+}
+
+/* Dark theme: retune the shared tokens so every `bg-surface`, `bg-card` and
+   `bg-row-stripe` usage flips automatically, navy-tinted to match the brand. */
+.dark {
+  --color-surface: #0a1322;
+  --color-row-stripe: #14213b;
+  --color-card: #101d34;
 }
 
 body {
@@ -30,4 +43,7 @@ body {
 }
 .slim-scroll::-webkit-scrollbar-track {
   background: transparent;
+}
+.dark .slim-scroll::-webkit-scrollbar-thumb {
+  background: #334155;
 }

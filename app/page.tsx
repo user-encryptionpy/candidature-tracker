@@ -20,11 +20,10 @@ const RESPONDED = new Set<ApplicationStatus>(["INTERVIEW", "OFFER", "REJECTED"])
 
 const STATUS_FILTERS = [
   { value: "ALL", label: "All statuses" },
-  { value: "APPLIED", label: "Applied" },
+  { value: "NO_RESPONSE", label: "No response" },
   { value: "INTERVIEW", label: "Interview" },
   { value: "OFFER", label: "Offer" },
   { value: "REJECTED", label: "Rejected" },
-  { value: "NO_RESPONSE", label: "No response" },
 ];
 
 const ICONS = {
@@ -200,13 +199,13 @@ export default function DashboardPage() {
   }
 
   const ghostButton =
-    "inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-navy shadow-sm ring-1 ring-gray-900/10 transition-colors hover:bg-navy hover:text-white disabled:opacity-50";
+    "inline-flex items-center gap-2 rounded-xl bg-card px-4 py-2 text-sm font-semibold text-navy shadow-sm ring-1 ring-gray-900/10 transition-colors hover:bg-navy hover:text-white disabled:opacity-50 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-navy-light";
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-navy-ink">
+          <h1 className="text-2xl font-bold tracking-tight text-navy-ink dark:text-slate-100">
             Dashboard
           </h1>
           <p className="mt-0.5 text-sm text-gray-500">
@@ -257,9 +256,9 @@ export default function DashboardPage() {
       )}
 
       {stats && profile && profile.weeklyGoal > 0 && (
-        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-900/5">
+        <div className="rounded-2xl bg-card p-4 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
           <div className="mb-2 flex items-center justify-between text-sm">
-            <span className="font-semibold text-navy-ink">
+            <span className="font-semibold text-navy-ink dark:text-slate-100">
               Weekly goal
               {profile.fullName ? ` — keep going, ${profile.fullName.split(" ")[0]}!` : ""}
             </span>
@@ -344,11 +343,11 @@ export default function DashboardPage() {
             ].map((panel) => (
               <div
                 key={panel.file}
-                className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5"
+                className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10"
               >
                 <div className="mb-3 flex items-center justify-between">
                   <div>
-                    <h2 className="text-sm font-bold text-navy-ink">
+                    <h2 className="text-sm font-bold text-navy-ink dark:text-slate-100">
                       {panel.title}
                     </h2>
                     <p className="text-xs text-gray-400">{panel.sub}</p>
@@ -418,14 +417,14 @@ export default function DashboardPage() {
               <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
             </svg>
             <input
-              className="w-full rounded-xl border-0 bg-white py-2.5 pl-9 pr-3 text-sm shadow-sm ring-1 ring-gray-900/10 transition-shadow placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-card py-2.5 pl-9 pr-3 text-sm shadow-sm ring-1 ring-gray-900/10 transition-shadow placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10"
               placeholder="Search company, title, location, source..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
           <select
-            className="rounded-xl border-0 bg-white px-3 py-2.5 text-sm font-medium shadow-sm ring-1 ring-gray-900/10 focus:outline-none focus:ring-2 focus:ring-navy-light"
+            className="rounded-xl border-0 bg-card px-3 py-2.5 text-sm font-medium shadow-sm ring-1 ring-gray-900/10 focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
@@ -435,7 +434,7 @@ export default function DashboardPage() {
               </option>
             ))}
           </select>
-          <div className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 text-sm shadow-sm ring-1 ring-gray-900/10">
+          <div className="flex items-center gap-1.5 rounded-xl bg-card px-3 py-1.5 text-sm shadow-sm ring-1 ring-gray-900/10 dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]">
             <span className="text-xs font-medium text-gray-400">Applied</span>
             <input
               type="date"
@@ -470,7 +469,7 @@ export default function DashboardPage() {
         </div>
 
         {loading ? (
-          <p className="rounded-2xl bg-white p-8 text-center text-sm text-gray-400 shadow-sm ring-1 ring-gray-900/5">
+          <p className="rounded-2xl bg-card p-8 text-center text-sm text-gray-400 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
             Loading...
           </p>
         ) : (

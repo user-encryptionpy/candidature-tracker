@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ALL_CITIES, ALL_COUNTRIES } from "@/lib/geo";
 
 const INPUT_CLASS =
-  "w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light";
+  "w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]";
 
 interface ProfileState {
   fullName: string;
@@ -49,7 +49,7 @@ function Field({
 }) {
   return (
     <div className={span ? "col-span-2" : ""}>
-      <label className="mb-1 block text-sm font-medium text-gray-700">
+      <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
         {label}
       </label>
       {children}
@@ -114,7 +114,7 @@ export default function ProfilePage() {
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-navy-ink">
+        <h1 className="text-2xl font-bold tracking-tight text-navy-ink dark:text-slate-100">
           Profile
         </h1>
         <p className="mt-0.5 text-sm text-gray-500">
@@ -129,8 +129,8 @@ export default function ProfilePage() {
         </p>
       )}
 
-      <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5">
-        <h2 className="mb-4 text-sm font-bold text-navy-ink">Identity</h2>
+      <div className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
+        <h2 className="mb-4 text-sm font-bold text-navy-ink dark:text-slate-100">Identity</h2>
         <div className="grid grid-cols-2 gap-4">
           <Field label="Full name">
             <input
@@ -178,8 +178,8 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5">
-        <h2 className="mb-4 text-sm font-bold text-navy-ink">
+      <div className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
+        <h2 className="mb-4 text-sm font-bold text-navy-ink dark:text-slate-100">
           Defaults for new applications
         </h2>
         <div className="grid grid-cols-2 gap-4">
@@ -226,15 +226,6 @@ export default function ProfilePage() {
               onChange={(e) => set("followUpDays", +e.target.value)}
             />
           </Field>
-          <Field label="Mark 'No response' after (days)">
-            <input
-              type="number"
-              min={1}
-              className={INPUT_CLASS}
-              value={profile.noResponseDays}
-              onChange={(e) => set("noResponseDays", +e.target.value)}
-            />
-          </Field>
           <Field label="Weekly application goal">
             <input
               type="number"
@@ -247,8 +238,8 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5">
-        <h2 className="mb-1 text-sm font-bold text-navy-ink">CV versions</h2>
+      <div className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
+        <h2 className="mb-1 text-sm font-bold text-navy-ink dark:text-slate-100">CV versions</h2>
         <p className="mb-4 text-xs text-gray-400">
           Register the CV variants you send (e.g. &quot;CV Supply Chain FR
           v3&quot;) — then tag each application with the version used.

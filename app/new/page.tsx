@@ -228,7 +228,7 @@ export default function NewApplicationPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-navy-ink">
+        <h1 className="text-2xl font-bold tracking-tight text-navy-ink dark:text-slate-100">
           New application
         </h1>
         <p className="mt-0.5 text-sm text-gray-500">
@@ -243,9 +243,9 @@ export default function NewApplicationPage() {
         </p>
       )}
 
-      <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5">
+      <div className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
         <div className="mb-2 flex items-center justify-between">
-          <label className="text-sm font-semibold text-navy-ink">
+          <label className="text-sm font-semibold text-navy-ink dark:text-slate-100">
             Smart paste
           </label>
           <button
@@ -258,7 +258,7 @@ export default function NewApplicationPage() {
           </button>
         </div>
         <textarea
-          className="h-36 w-full rounded-xl border-0 bg-surface p-3 text-sm ring-1 ring-inset ring-gray-200 transition-shadow placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+          className="h-36 w-full rounded-xl border-0 bg-surface p-3 text-sm ring-1 ring-inset ring-gray-200 transition-shadow placeholder:text-gray-400 focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10"
           placeholder={`Paste anything — or use the standard template:\n\n${PASTE_TEMPLATE.split("\n").slice(0, 6).join("\n")}\n...`}
           value={pastedText}
           onChange={(e) => handlePasteText(e.target.value)}
@@ -270,16 +270,16 @@ export default function NewApplicationPage() {
           e.preventDefault();
           save(false);
         }}
-        className="space-y-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-900/5"
+        className="space-y-4 rounded-2xl bg-card p-5 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10"
       >
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Company *
             </label>
             <input
               list="company-options"
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.company}
               onChange={(e) => handleFieldChange("company", e.target.value)}
               required
@@ -292,11 +292,11 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Job title *
             </label>
             <input
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.jobTitle}
               onChange={(e) => handleFieldChange("jobTitle", e.target.value)}
               required
@@ -304,23 +304,23 @@ export default function NewApplicationPage() {
           </div>
 
           <div className="col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Offer URL
             </label>
             <input
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.url}
               onChange={(e) => handleFieldChange("url", e.target.value)}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Contract type
             </label>
             <input
               list="contract-options"
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.contractType}
               onChange={(e) => handleFieldChange("contractType", e.target.value)}
               placeholder="CDI, Stage, PFE, Alternance..."
@@ -335,12 +335,12 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Source
             </label>
             <input
               list="source-options"
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.source}
               onChange={(e) => handleFieldChange("source", e.target.value)}
               placeholder="LinkedIn, Indeed, referral..."
@@ -353,12 +353,12 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Country
             </label>
             <input
               list="country-options"
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.country}
               onChange={(e) => handleFieldChange("country", e.target.value)}
             />
@@ -370,12 +370,12 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               City
             </label>
             <input
               list="city-options"
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.location}
               onChange={(e) => handleFieldChange("location", e.target.value)}
               placeholder="Known city fills the country"
@@ -388,23 +388,23 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Date applied
             </label>
             <input
               type="date"
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.dateApplied}
               onChange={(e) => handleFieldChange("dateApplied", e.target.value)}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Status
             </label>
             <select
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.status}
               onChange={(e) => handleFieldChange("status", e.target.value)}
             >
@@ -417,23 +417,23 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Salary
             </label>
             <input
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.salary}
               onChange={(e) => handleFieldChange("salary", e.target.value)}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Next follow-up
             </label>
             <input
               type="date"
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.nextFollowUp}
               onChange={(e) =>
                 handleFieldChange("nextFollowUp", e.target.value)
@@ -442,12 +442,12 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               CV version sent
             </label>
             <input
               list="cv-options"
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.cvVersion}
               onChange={(e) => handleFieldChange("cvVersion", e.target.value)}
               placeholder={
@@ -464,11 +464,11 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Contact person
             </label>
             <input
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.contactPerson}
               onChange={(e) =>
                 handleFieldChange("contactPerson", e.target.value)
@@ -477,11 +477,11 @@ export default function NewApplicationPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Contact email
             </label>
             <input
-              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-light"
+              className="w-full rounded-xl border-0 bg-surface px-3 py-2 text-sm ring-1 ring-inset ring-gray-200 transition-shadow focus:bg-card focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]"
               value={form.contactEmail}
               onChange={(e) =>
                 handleFieldChange("contactEmail", e.target.value)
@@ -490,7 +490,7 @@ export default function NewApplicationPage() {
           </div>
 
           <div className="col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
               Notes
             </label>
             <textarea
@@ -515,7 +515,7 @@ export default function NewApplicationPage() {
             type="button"
             disabled={submitting}
             onClick={() => save(true)}
-            className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-navy shadow-sm ring-1 ring-gray-900/10 transition-colors hover:bg-navy hover:text-white disabled:opacity-50"
+            className="rounded-xl bg-card px-5 py-2.5 text-sm font-semibold text-navy shadow-sm ring-1 ring-gray-900/10 transition-colors hover:bg-navy hover:text-white disabled:opacity-50 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-navy-light"
           >
             Save &amp; add another
           </button>

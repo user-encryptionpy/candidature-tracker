@@ -27,7 +27,7 @@ export function ApplicationsTable({
 }) {
   if (applications.length === 0) {
     return (
-      <p className="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500">
+      <p className="rounded-2xl border border-dashed border-gray-300 bg-card p-8 text-center text-sm text-gray-500 dark:border-white/15 dark:text-slate-400">
         No applications match. Try clearing the search/filter, or{" "}
         <Link href="/new" className="font-medium text-navy underline">
           add one
@@ -44,10 +44,10 @@ export function ApplicationsTable({
   }
 
   return (
-    <div className="slim-scroll max-h-[560px] overflow-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5">
+    <div className="slim-scroll max-h-[560px] overflow-auto rounded-2xl bg-card shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
       <table className="min-w-full border-collapse text-sm">
         <thead className="sticky top-0 z-10">
-          <tr className="bg-navy text-left text-[11px] font-semibold uppercase tracking-wider text-blue-100">
+          <tr className="bg-navy text-left text-[11px] font-semibold uppercase tracking-wider text-blue-100 dark:bg-navy-deep">
             <th className="px-4 py-3">Company</th>
             <th className="px-4 py-3">Job title</th>
             <th className="px-4 py-3">Status</th>
@@ -58,23 +58,23 @@ export function ApplicationsTable({
             <th className="px-4 py-3 text-right">Action</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100">
+        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
           {applications.map((a, i) => {
             const colors = STATUS_BADGE_COLORS[a.status];
             return (
               <tr
                 key={a.id}
                 onClick={() => onOpen(a.id)}
-                className={`group cursor-pointer transition-colors hover:bg-blue-50/60 ${
-                  i % 2 === 1 ? "bg-row-stripe" : "bg-white"
+                className={`group cursor-pointer transition-colors hover:bg-blue-50/60 dark:hover:bg-white/5 ${
+                  i % 2 === 1 ? "bg-row-stripe" : "bg-card"
                 }`}
               >
                 <td className="px-4 py-2.5">
-                  <span className="font-semibold text-navy-ink group-hover:text-navy-light">
+                  <span className="font-semibold text-navy-ink group-hover:text-navy-light dark:text-slate-100">
                     {a.company}
                   </span>
                 </td>
-                <td className="max-w-[280px] truncate px-4 py-2.5 text-gray-600" title={a.jobTitle}>
+                <td className="max-w-[280px] truncate px-4 py-2.5 text-gray-600 dark:text-slate-300" title={a.jobTitle}>
                   {a.jobTitle}
                 </td>
                 <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
@@ -107,16 +107,16 @@ export function ApplicationsTable({
                     ))}
                   </select>
                 </td>
-                <td className="px-4 py-2.5 text-gray-500">{a.source || "—"}</td>
-                <td className="whitespace-nowrap px-4 py-2.5 tabular-nums text-gray-500">
+                <td className="px-4 py-2.5 text-gray-500 dark:text-slate-400">{a.source || "—"}</td>
+                <td className="whitespace-nowrap px-4 py-2.5 tabular-nums text-gray-500 dark:text-slate-400">
                   {new Date(a.dateApplied).toLocaleDateString()}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2.5 tabular-nums text-gray-500">
+                <td className="whitespace-nowrap px-4 py-2.5 tabular-nums text-gray-500 dark:text-slate-400">
                   {a.dateResponse
                     ? new Date(a.dateResponse).toLocaleDateString()
                     : "—"}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2.5 tabular-nums text-gray-500">
+                <td className="whitespace-nowrap px-4 py-2.5 tabular-nums text-gray-500 dark:text-slate-400">
                   {a.nextFollowUp
                     ? new Date(a.nextFollowUp).toLocaleDateString()
                     : "—"}

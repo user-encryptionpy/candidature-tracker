@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NavLinks } from "@/app/components/NavLinks";
+import { ThemeToggle } from "@/app/components/ThemeToggle";
 import "./globals.css";
+
+// Set the theme class before first paint to avoid a light/dark flash.
+const THEME_INIT = `(function(){try{var t=localStorage.getItem('theme')||'system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",
@@ -37,13 +41,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-screen bg-surface text-gray-900">
+    <html
+      lang="en"
+      className={`${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
+      <body className="min-h-screen bg-surface text-gray-900 dark:text-slate-200">
         {/* Desktop sidebar */}
         <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 bg-gradient-to-b from-navy-ink via-navy-deep to-navy py-6 lg:flex">
           <LogoMark />
           <NavLinks orientation="side" />
-          <div className="mt-auto px-6">
+          <div className="mt-auto space-y-3 px-4">
             <div className="rounded-xl bg-white/5 p-3 text-[11px] leading-relaxed text-blue-100/50 ring-1 ring-white/10">
               Paste a job posting or a LinkedIn confirmation email on{" "}
               <span className="font-semibold text-blue-100/80">
@@ -51,6 +62,7 @@ export default function RootLayout({
               </span>{" "}
               — fields fill themselves.
             </div>
+            <ThemeToggle />
           </div>
         </aside>
 
