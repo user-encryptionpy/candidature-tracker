@@ -68,13 +68,19 @@ export default function DashboardPage() {
   const [status, setStatus] = useState("ALL");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const [companies, setCompanies] = useState<string[]>([]);
+  const [countries, setCountries] = useState<string[]>([]);
+  const [cities, setCities] = useState<string[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [bulkStatus, setBulkStatus] = useState<ApplicationStatus | "">("");
   const [pendingChange, setPendingChange] = useState<{
-    id: number;
+    id: number | "bulk";
     status: ApplicationStatus;
     company: string;
   } | null>(null);
@@ -92,7 +98,11 @@ export default function DashboardPage() {
   const fetchCompanies = useCallback(() => {
     fetch("/api/companies")
       .then((r) => r.json())
-      .then((d) => setCompanies(d.companies ?? []))
+      .then((d) => {
+        setCompanies(d.companies ?? []);
+        setCountries(d.countries ?? []);
+        setCities(d.cities ?? []);
+      })
       .catch(() => {});
   }, []);
 
@@ -102,6 +112,8 @@ export default function DashboardPage() {
     if (status !== "ALL") params.set("status", status);
     if (from) params.set("from", from);
     if (to) params.set("to", to);
+    if (country) params.set("country", country);
+    if (city) params.set("city", city);
     setLoading(true);
     return fetch(`/api/applications?${params.toString()}`)
       .then((r) => r.json())
@@ -110,7 +122,7 @@ export default function DashboardPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [query, status, from, to]);
+  }, [query, status, from, to, country, city]);
 
   useEffect(() => {
     fetchStats();
@@ -160,9 +172,74 @@ export default function DashboardPage() {
     }
   }
 
+  // --- Selection & bulk actions ---
+  function toggleSelect(id: number) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    setSelectedIds((prev) =>
+      applications.every((a) => prev.has(a.id))
+        ? new Set()
+        : new Set(applications.map((a) => a.id))
+    );
+  }
+
+  async function bulkPatch(newStatus: ApplicationStatus, dateResponse: string | null) {
+    const ids = Array.from(selectedIds);
+    await fetch("/api/applications/bulk", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids, status: newStatus, dateResponse }),
+    });
+    setSelectedIds(new Set());
+    setBulkStatus("");
+    await Promise.all([fetchApplications(), fetchStats()]);
+  }
+
+  function applyBulkStatus() {
+    if (!bulkStatus || selectedIds.size === 0) return;
+    if (RESPONDED.has(bulkStatus)) {
+      setPendingChange({
+        id: "bulk",
+        status: bulkStatus,
+        company: `${selectedIds.size} application${selectedIds.size === 1 ? "" : "s"}`,
+      });
+    } else {
+      bulkPatch(bulkStatus, null);
+    }
+  }
+
+  async function bulkDelete() {
+    if (
+      !confirm(
+        `Delete ${selectedIds.size} selected application${
+          selectedIds.size === 1 ? "" : "s"
+        }? This cannot be undone.`
+      )
+    )
+      return;
+    await fetch("/api/applications/bulk", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: Array.from(selectedIds) }),
+    });
+    setSelectedIds(new Set());
+    await Promise.all([fetchApplications(), fetchStats()]);
+  }
+
   function confirmResponseDate(dateISO: string) {
     if (pendingChange) {
-      patchStatus(pendingChange.id, pendingChange.status, dateISO);
+      if (pendingChange.id === "bulk") {
+        bulkPatch(pendingChange.status, dateISO);
+      } else {
+        patchStatus(pendingChange.id, pendingChange.status, dateISO);
+      }
     }
     setPendingChange(null);
   }
@@ -434,6 +511,32 @@ export default function DashboardPage() {
               </option>
             ))}
           </select>
+          <select
+            className="rounded-xl border-0 bg-card px-3 py-2.5 text-sm font-medium shadow-sm ring-1 ring-gray-900/10 focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            title="Filter by country"
+          >
+            <option value="">All countries</option>
+            {countries.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+          <select
+            className="rounded-xl border-0 bg-card px-3 py-2.5 text-sm font-medium shadow-sm ring-1 ring-gray-900/10 focus:outline-none focus:ring-2 focus:ring-navy-light dark:text-slate-200 dark:ring-white/10"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            title="Filter by city"
+          >
+            <option value="">All cities</option>
+            {cities.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
           <div className="flex items-center gap-1.5 rounded-xl bg-card px-3 py-1.5 text-sm shadow-sm ring-1 ring-gray-900/10 dark:text-slate-200 dark:ring-white/10 dark:[color-scheme:dark]">
             <span className="text-xs font-medium text-gray-400">Applied</span>
             <input
@@ -468,6 +571,50 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {selectedIds.size > 0 && (
+          <div className="flex flex-wrap items-center gap-2.5 rounded-xl bg-navy px-4 py-2.5 text-sm text-white shadow-sm">
+            <span className="font-semibold">
+              {selectedIds.size} selected
+            </span>
+            <span className="text-blue-200/60">— set status to</span>
+            <select
+              className="rounded-lg border-0 bg-white/15 px-2.5 py-1.5 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-white/40"
+              value={bulkStatus}
+              onChange={(e) =>
+                setBulkStatus(e.target.value as ApplicationStatus | "")
+              }
+            >
+              <option value="" className="text-gray-900">
+                Choose status…
+              </option>
+              {STATUS_FILTERS.filter((s) => s.value !== "ALL").map((s) => (
+                <option key={s.value} value={s.value} className="text-gray-900">
+                  {s.label}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={applyBulkStatus}
+              disabled={!bulkStatus}
+              className="rounded-lg bg-white px-3 py-1.5 text-sm font-semibold text-navy transition-colors hover:bg-blue-50 disabled:opacity-40"
+            >
+              Apply
+            </button>
+            <button
+              onClick={bulkDelete}
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/20 hover:text-white"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => setSelectedIds(new Set())}
+              className="ml-auto rounded-lg px-3 py-1.5 text-sm font-medium text-blue-100 transition-colors hover:bg-white/10"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
         {loading ? (
           <p className="rounded-2xl bg-card p-8 text-center text-sm text-gray-400 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10">
             Loading...
@@ -475,6 +622,9 @@ export default function DashboardPage() {
         ) : (
           <ApplicationsTable
             applications={applications}
+            selectedIds={selectedIds}
+            onToggleSelect={toggleSelect}
+            onToggleSelectAll={toggleSelectAll}
             onDelete={handleDelete}
             onStatusChange={handleStatusChange}
             onOpen={(id) => router.push(`/applications/${id}`)}

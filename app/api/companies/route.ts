@@ -51,11 +51,24 @@ export async function GET() {
   const sources = Array.from(
     new Set(all.map((r) => r.source).filter((s): s is string => !!s))
   ).sort();
+  const countries = Array.from(
+    new Set(all.map((r) => r.country).filter((s): s is string => !!s))
+  ).sort();
+  const cities = Array.from(
+    new Set(all.map((r) => r.location).filter((s): s is string => !!s))
+  ).sort();
 
   const defaults = {
     source: mode(all.map((r) => r.source)),
     country: mode(all.map((r) => r.country)),
   };
 
-  return NextResponse.json({ companies, sources, companyDetails, defaults });
+  return NextResponse.json({
+    companies,
+    sources,
+    countries,
+    cities,
+    companyDetails,
+    defaults,
+  });
 }

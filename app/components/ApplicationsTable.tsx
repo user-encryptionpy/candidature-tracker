@@ -19,12 +19,20 @@ export function ApplicationsTable({
   onDelete,
   onStatusChange,
   onOpen,
+  selectedIds,
+  onToggleSelect,
+  onToggleSelectAll,
 }: {
   applications: Application[];
   onDelete: (id: number) => void;
   onStatusChange: (id: number, status: ApplicationStatus) => void;
   onOpen: (id: number) => void;
+  selectedIds: Set<number>;
+  onToggleSelect: (id: number) => void;
+  onToggleSelectAll: () => void;
 }) {
+  const allSelected =
+    applications.length > 0 && applications.every((a) => selectedIds.has(a.id));
   if (applications.length === 0) {
     return (
       <p className="rounded-2xl border border-dashed border-gray-300 bg-card p-8 text-center text-sm text-gray-500 dark:border-white/15 dark:text-slate-400">
@@ -48,6 +56,15 @@ export function ApplicationsTable({
       <table className="min-w-full border-collapse text-sm">
         <thead className="sticky top-0 z-10">
           <tr className="bg-navy text-left text-[11px] font-semibold uppercase tracking-wider text-blue-100 dark:bg-navy-deep">
+            <th className="w-10 px-3 py-3">
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={onToggleSelectAll}
+                className="h-4 w-4 cursor-pointer accent-navy-light"
+                title="Select all shown"
+              />
+            </th>
             <th className="px-4 py-3">Company</th>
             <th className="px-4 py-3">Job title</th>
             <th className="px-4 py-3">Status</th>
@@ -61,14 +78,27 @@ export function ApplicationsTable({
         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
           {applications.map((a, i) => {
             const colors = STATUS_BADGE_COLORS[a.status];
+            const selected = selectedIds.has(a.id);
             return (
               <tr
                 key={a.id}
                 onClick={() => onOpen(a.id)}
                 className={`group cursor-pointer transition-colors hover:bg-blue-50/60 dark:hover:bg-white/5 ${
-                  i % 2 === 1 ? "bg-row-stripe" : "bg-card"
+                  selected
+                    ? "bg-blue-50 dark:bg-navy-light/15"
+                    : i % 2 === 1
+                    ? "bg-row-stripe"
+                    : "bg-card"
                 }`}
               >
+                <td className="px-3 py-2.5" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    type="checkbox"
+                    checked={selected}
+                    onChange={() => onToggleSelect(a.id)}
+                    className="h-4 w-4 cursor-pointer accent-navy-light"
+                  />
+                </td>
                 <td className="px-4 py-2.5">
                   <span className="font-semibold text-navy-ink group-hover:text-navy-light dark:text-slate-100">
                     {a.company}

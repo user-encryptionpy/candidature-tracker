@@ -8,6 +8,8 @@ export async function GET(req: NextRequest) {
   const status = searchParams.get("status");
   const from = searchParams.get("from");
   const to = searchParams.get("to");
+  const country = searchParams.get("country");
+  const city = searchParams.get("city");
 
   // Filter by the effective status shown in the graph: an application with no
   // reply yet (still APPLIED) counts as "No response".
@@ -31,6 +33,8 @@ export async function GET(req: NextRequest) {
       AND: [
         statusFilter,
         dateFilter,
+        country ? { country } : {},
+        city ? { location: city } : {},
         q
           ? {
               OR: [
